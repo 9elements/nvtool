@@ -43,9 +43,9 @@ tpm_nv_permission_name_t TPM_NV_PER_table[] = {
     { "AUTHREAD",      TPM_NV_PER_AUTHREAD,      TRUE  },
     { "OWNERREAD",     TPM_NV_PER_OWNERREAD,     TRUE  },
     { "PPREAD",        TPM_NV_PER_PPREAD,        TRUE  },
-    { "GLOBALLOCK",    TPM_NV_PER_GLOBALLOCK,    FALSE },
+    { "GLOBALLOCK",    TPM_NV_PER_GLOBALLOCK,    TRUE  },
     { "WRITE_STCLEAR", TPM_NV_PER_WRITE_STCLEAR, TRUE  },
-    { "WRITEDEFINE",   TPM_NV_PER_WRITEDEFINE,   FALSE },
+    { "WRITEDEFINE",   TPM_NV_PER_WRITEDEFINE,   TRUE  },
     { "WRITEALL",      TPM_NV_PER_WRITEALL,      TRUE  },
     { "AUTHWRITE",     TPM_NV_PER_AUTHWRITE,     TRUE  },
     { "OWNERWRITE",    TPM_NV_PER_OWNERWRITE,    TRUE  },
@@ -518,7 +518,7 @@ tnv_define(tnv_context_t* t, tnv_args_t* a)
     BYTE** pcrCache = NULL;
     UINT32 i;
 
-    if (a->size == 0) {
+    if (a->size == 0 && (a->permissions & TPM_NV_PER_WRITEDEFINE)) {
         TNV_stderr("Cannot define a zero-sized space.\n");
         return TSP_ERROR(TSS_E_BAD_PARAMETER);
     }
@@ -617,6 +617,36 @@ tnv_define(tnv_context_t* t, tnv_args_t* a)
                 TNV_syslog("Tspi_PcrComposite_SetPcrValue", result);
                 goto out;
             }
+        }
+
+        result = Tspi_PcrComposite_SetPcrLocality(hPcrCompositeRead,
+                                                  a->rlocalities);
+        if (result != TSS_SUCCESS) {
+            TNV_syslog("Tspi_PcrComposite_SetPcrLocality", result);
+            goto out;
+        }
+
+        result = Tspi_PcrComposite_SetPcrLocality(hPcrCompositeWrite,
+                                                  a->wlocalities);
+        if (result != TSS_SUCCESS) {
+            TNV_syslog("Tspi_PcrComposite_SetPcrLocality", result);
+            goto out;
+        }
+    } else {
+        TSS_FLAG initFlags = TSS_PCRS_STRUCT_INFO_SHORT;
+
+        result = Tspi_Context_CreateObject(t->hContext, TSS_OBJECT_TYPE_PCRS,
+                                           initFlags, &hPcrCompositeRead);
+        if (result != TSS_SUCCESS) {
+            TNV_syslog("Tspi_Context_CreateObject", result);
+            return result;
+        }
+
+        result = Tspi_Context_CreateObject(t->hContext, TSS_OBJECT_TYPE_PCRS,
+                                           initFlags, &hPcrCompositeWrite);
+        if (result != TSS_SUCCESS) {
+            TNV_syslog("Tspi_Context_CreateObject", result);
+            return result;
         }
 
         result = Tspi_PcrComposite_SetPcrLocality(hPcrCompositeRead,
