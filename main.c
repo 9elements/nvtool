@@ -242,10 +242,10 @@ main(int argc, char** argv)
 
     switch (cmdmap) {
         case CMD_TNV_DEFINE:
-            tnv_args.flags |= (TNV_FLAG_CREATE | TNV_FLAG_NEEDOWNER);
+            tnv_args.flags |= TNV_FLAG_CREATE;
             break;
         case CMD_TNV_RELEASE:
-            tnv_args.flags |= (TNV_FLAG_DESTROY | TNV_FLAG_NEEDOWNER);
+            tnv_args.flags |= TNV_FLAG_DESTROY;
             break;
         case CMD_TNV_LIST:
             tnv_args.flags |= TNV_FLAG_NONSPECIFIC;
