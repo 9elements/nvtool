@@ -29,6 +29,8 @@ long_options[] = {
     { "index",          required_argument, 0, 'I' },
     { "index_password", required_argument, 0, 'i' },
     { "list",           no_argument,       0, 'l' },
+    { "rlocalities",    required_argument, 0, 'L' },
+    { "wlocalities",    required_argument, 0, 'W' },
     { "offset",         required_argument, 0, 'O' },
     { "owner_password", required_argument, 0, 'o' },
     { "password",       required_argument, 0, '0' },
@@ -43,7 +45,7 @@ long_options[] = {
     { NULL, 0, 0, 0 },
 };
 
-static const char* options = "0:DI:O:P:Rd:f:hi:lo:p:rs:wxz";
+static const char* options = "0:DI:L:O:P:W:Rd:f:hi:lo:p:rs:wxz";
 
 static void
 help_brief(void)
@@ -101,6 +103,21 @@ main(int argc, char** argv)
                 cmdmap |= CMD_BITMAP(CMDBIT_TNV_INDEX);
                 break;
             }
+            case 'L': {
+                int i;
+                char* alocality = strtok((char*)optarg, ",");
+                while (alocality) {
+                   for (i = 0; TPM_NV_LOC_table[i].locality_name; i++) {
+                       if (strcasecmp(TPM_NV_LOC_table[i].locality_name,
+                                      alocality) == 0) {
+                           tnv_args.rlocalities |=
+                                   TPM_NV_LOC_table[i].locality_value;
+                       }
+                   }
+                   alocality = strtok(NULL, ","); 
+                }
+                break;
+            }
             case 'O':
                 errno = 0;
                 char* end;
@@ -126,6 +143,21 @@ main(int argc, char** argv)
                        }
                    }
                    aperm = strtok(NULL, ","); 
+                }
+                break;
+            }
+            case 'W': {
+                int i;
+                char* alocality = strtok((char*)optarg, ",");
+                while (alocality) {
+                   for (i = 0; TPM_NV_LOC_table[i].locality_name; i++) {
+                       if (strcasecmp(TPM_NV_LOC_table[i].locality_name,
+                                      alocality) == 0) {
+                           tnv_args.wlocalities |=
+                                   TPM_NV_LOC_table[i].locality_value;
+                       }
+                   }
+                   alocality = strtok(NULL, ","); 
                 }
                 break;
             }

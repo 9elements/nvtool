@@ -53,6 +53,16 @@ tpm_nv_permission_name_t TPM_NV_PER_table[] = {
     { NULL, 0, FALSE },
 };
 
+tpm_nv_locality_name_t TPM_NV_LOC_table[] = {
+    { "LOCALITY_ZERO",  TPM_LOC_ZERO   },
+    { "LOCALITY_ONE",   TPM_LOC_ONE    },
+    { "LOCALITY_TWO",   TPM_LOC_TWO    },
+    { "LOCALITY_THREE", TPM_LOC_THREE  },
+    { "LOCALITY_FOUR",  TPM_LOC_FOUR   },
+    { NULL, 0 },
+};
+
+
 #define TNV_PUB_LABEL_FMT "  %-22s = "
 
 static TSS_BOOL
@@ -513,6 +523,16 @@ tnv_define(tnv_context_t* t, tnv_args_t* a)
         return TSP_ERROR(TSS_E_BAD_PARAMETER);
     }
 
+    if (a->rlocalities == 0) {
+        a->rlocalities = TPM_LOC_ONE | TPM_LOC_TWO |
+            TPM_LOC_THREE | TPM_LOC_FOUR | TPM_LOC_FOUR;
+    }
+
+    if (a->wlocalities == 0) {
+        a->wlocalities = TPM_LOC_ONE | TPM_LOC_TWO |
+            TPM_LOC_THREE | TPM_LOC_FOUR | TPM_LOC_FOUR;
+    }
+
     if (a->permissions != 0) {
         if ((a->permissions & TPM_NV_PER_AUTHREAD) &&
             (a->permissions & TPM_NV_PER_OWNERREAD)) {
@@ -596,22 +616,14 @@ tnv_define(tnv_context_t* t, tnv_args_t* a)
         }
 
         result = Tspi_PcrComposite_SetPcrLocality(hPcrCompositeRead,
-                                                  TPM_LOC_ZERO  |
-                                                  TPM_LOC_ONE   |
-                                                  TPM_LOC_TWO   |
-                                                  TPM_LOC_THREE |
-                                                  TPM_LOC_FOUR);
+                                                  a->rlocalities);
         if (result != TSS_SUCCESS) {
             TNV_syslog("Tspi_PcrComposite_SetPcrLocality", result);
             goto out;
         }
 
         result = Tspi_PcrComposite_SetPcrLocality(hPcrCompositeWrite,
-                                                  TPM_LOC_ZERO  |
-                                                  TPM_LOC_ONE   |
-                                                  TPM_LOC_TWO   |
-                                                  TPM_LOC_THREE |
-                                                  TPM_LOC_FOUR);
+                                                  a->wlocalities);
         if (result != TSS_SUCCESS) {
             TNV_syslog("Tspi_PcrComposite_SetPcrLocality", result);
             goto out;

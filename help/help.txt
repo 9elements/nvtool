@@ -12,6 +12,7 @@ Usage:
 
   --define --index INDEX --owner_password OWNER_PASSWORD --size SIZE \
     [--pcr PCR] [--permissions PERMISSIONS] [--index_password INDEX_PASSWORD]
+    [--rlocalities LOCALITIES] [--wlocalities LOCALITIES]
 
   The parameters mean the following:
 
@@ -38,6 +39,15 @@ Usage:
                       
   INDEX_PASSWORD  Password for reading and/or writing to the NV store; required
                   if PERMISSIONS has AUTHREAD or AUTHWRITE
+  
+  LOCALITIES      A comma-separated string consisting of zero or more of the
+                  following keywords:
+
+                    TPM_LOC_ZERO  TPM locality zero
+                    TPM_LOC_ONE   TPM locality one
+                    TPM_LOC_TWO   TPM locality two
+                    TPM_LOC_THREE TPM locality three
+                    TPM_LOC_FOUR  TPM locality four
 
 * Destroying an NV store
 

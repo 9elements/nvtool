@@ -18,6 +18,8 @@ typedef struct {
     uint32_t            tss_version;
     uint32_t            flags;
     uint32_t            index;
+    uint32_t            rlocalities;
+    uint32_t            wlocalities;
     uint32_t            permissions;
     tnv_pcrs_selected_t pcrs_selected;
     const char*         index_password;
@@ -35,7 +37,13 @@ typedef struct {
     TSS_BOOL    allowed;
 } tpm_nv_permission_name_t;
 
+typedef struct {
+    const char* locality_name;
+    uint32_t    locality_value;
+} tpm_nv_locality_name_t;
+
 extern tpm_nv_permission_name_t TPM_NV_PER_table[];
+extern tpm_nv_locality_name_t TPM_NV_LOC_table[];
 
 struct tnv_data_public_t;
 struct tnv_context;
