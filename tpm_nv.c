@@ -524,15 +524,15 @@ tnv_define(tnv_context_t* t, tnv_args_t* a)
     }
 
     if (a->rlocalities == 0) {
-        TNV_syslog("Using default read localities", TPM_SUCCESS);
-        a->rlocalities = TPM_LOC_ONE | TPM_LOC_TWO |
-            TPM_LOC_THREE | TPM_LOC_FOUR | TPM_LOC_FOUR;
+        a->rlocalities = TPM_LOC_ZERO | TPM_LOC_ONE | TPM_LOC_TWO |
+            TPM_LOC_THREE | TPM_LOC_FOUR;
+        TNV_syslog("Using default read localities", a->rlocalities);
     }
 
     if (a->wlocalities == 0) {
-        TNV_syslog("Using default write localities", TPM_SUCCESS);
-        a->wlocalities = TPM_LOC_ONE | TPM_LOC_TWO |
-            TPM_LOC_THREE | TPM_LOC_FOUR | TPM_LOC_FOUR;
+        a->wlocalities = TPM_LOC_ZERO | TPM_LOC_ONE | TPM_LOC_TWO |
+            TPM_LOC_THREE | TPM_LOC_FOUR;
+        TNV_syslog("Using default write localities", a->wlocalities);
     }
 
     if (a->permissions != 0) {
