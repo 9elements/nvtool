@@ -526,14 +526,12 @@ tnv_define(tnv_context_t* t, tnv_args_t* a)
     if (a->rlocalities == 0) {
         a->rlocalities = TPM_LOC_ZERO | TPM_LOC_ONE | TPM_LOC_TWO |
             TPM_LOC_THREE | TPM_LOC_FOUR;
-        printf("Read localities: %x", a->rlocalities);
         TNV_syslog("Using default read localities", TPM_SUCCESS);
     }
 
     if (a->wlocalities == 0) {
         a->wlocalities = TPM_LOC_ZERO | TPM_LOC_ONE | TPM_LOC_TWO |
             TPM_LOC_THREE | TPM_LOC_FOUR;
-        printf("Write localities: %x", a->wlocalities);
         TNV_syslog("Using default write localities", TPM_SUCCESS);
     }
 
