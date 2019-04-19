@@ -43,11 +43,11 @@ Usage:
   LOCALITIES      A comma-separated string consisting of zero or more of the
                   following keywords:
 
-                    TPM_LOC_ZERO  TPM locality zero
-                    TPM_LOC_ONE   TPM locality one
-                    TPM_LOC_TWO   TPM locality two
-                    TPM_LOC_THREE TPM locality three
-                    TPM_LOC_FOUR  TPM locality four
+                    LOCALITY_ZERO  TPM locality zero
+                    LOCALITY_ONE   TPM locality one
+                    LOCALITY_TWO   TPM locality two
+                    LOCALITY_THREE TPM locality three
+                    LOCALITY_FOUR  TPM locality four
 
 * Destroying an NV store
 
